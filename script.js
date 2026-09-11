@@ -2,36 +2,45 @@ document.addEventListener('DOMContentLoaded', () => {
   loadDashboardData();
 });
 
-async function loadDashboardData() {
-  const datasets = ['risks', 'controls', 'compliance', 'vendors', 'findings', 'metadata'];
-  const data = {};
-
+async function fetchJSON(name) {
   try {
-    for (const name of datasets) {
-      const res = await fetch(`data/${name}.json`);
-      if (!res.ok) throw new Error(`HTTP error! Status: ${res.status} on ${name}`);
-      data[name] = await res.json();
-    }
-    renderDashboard(data);
-  } catch (error) {
-    console.error('Error loading GRC dashboard data:', error);
+    const res = await fetch(`data/${name}.json`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (err) {
+    console.warn(`Failed to load data/${name}.json:`, err);
+    return null;
+  }
+}
+
+async function loadDashboardData() {
+  const [risks, controls, compliance, vendors, findings, metadata] = await Promise.all([
+    fetchJSON('risks'),
+    fetchJSON('controls'),
+    fetchJSON('compliance'),
+    fetchJSON('vendors'),
+    fetchJSON('findings'),
+    fetchJSON('metadata')
+  ]);
+
+  // If critical datasets fail to load entirely
+  if (!risks && !compliance) {
     const mainContent = document.querySelector('.main-content') || document.body;
     mainContent.innerHTML = `
       <div style="padding: 2rem; background: #fff1f0; border: 1px solid #ffa39e; border-radius: 8px; margin: 2rem;">
         <h3 style="color: #cf1322; margin-top: 0;">⚠️ Unable to Load Dashboard Data</h3>
-        <p style="color: #434343;">There was an issue loading the asynchronous GRC JSON models. Please check your network connection or verify file paths in the repository.</p>
+        <p style="color: #434343;">There was an issue loading the asynchronous GRC JSON models. Please check that all files exist in the <code>data/</code> folder.</p>
       </div>
     `;
+    return;
   }
-}
 
-function renderDashboard(data) {
-  renderMetadata(data.metadata);
-  renderRiskRegister(data.risks);
-  renderCompliance(data.compliance);
-  renderControls(data.controls);
-  renderVendors(data.vendors);
-  renderFindings(data.findings);
+  renderMetadata(metadata);
+  if (risks) renderRiskRegister(risks);
+  if (compliance) renderCompliance(compliance);
+  if (controls) renderControls(controls);
+  if (vendors) renderVendors(vendors);
+  if (findings) renderFindings(findings);
 }
 
 function renderMetadata(metadata) {
@@ -43,7 +52,7 @@ function renderMetadata(metadata) {
   }
 
   const postureElem = document.getElementById('overall-risk-posture');
-  if (postureElem) {
+  if (postureElem && metadata.overallRiskPosture) {
     postureElem.innerHTML = `
       <div style="background: #fafafa; border-left: 4px solid #f5222d; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem;">
         <strong style="color: #cf1322;">Overall Enterprise Risk Posture: ${metadata.overallRiskPosture}</strong>
@@ -60,17 +69,17 @@ function renderRiskRegister(risks) {
   tableBody.innerHTML = risks.map(r => `
     <tr>
       <td><strong>${r.id}</strong></td>
-      <td>${r.name}<br><small style="color:#8c8c8c">${r.category}</small></td>
+      <td>${r.name}<br><small style="color:#8c8c8c">${r.category || ''}</small></td>
       <td>
-        <span class="badge ${r.inherentRating.toLowerCase()}">${r.inherentScore} (${r.inherentRating})</span>
+        <span class="badge ${(r.inherentRating || 'low').toLowerCase()}">${r.inherentScore || r.score || '-'} (${r.inherentRating || r.rating || '-'})</span>
       </td>
-      <td style="font-size: 0.85rem; color: #434343;">${r.controls}</td>
+      <td style="font-size: 0.85rem; color: #434343;">${r.controls || '-'}</td>
       <td>
-        <span class="badge ${r.residualRating.toLowerCase()}">${r.residualScore} (${r.residualRating})</span>
+        <span class="badge ${(r.residualRating || 'low').toLowerCase()}">${r.residualScore || '-'} (${r.residualRating || '-'})</span>
       </td>
-      <td><code>${r.treatment}</code></td>
-      <td>${r.owner}</td>
-      <td><span class="status-pill ${r.status.toLowerCase().replace(/\s+/g, '-')}">${r.status}</span></td>
+      <td><code>${r.treatment || 'Mitigate'}</code></td>
+      <td>${r.owner || '-'}</td>
+      <td><span class="status-pill ${(r.status || 'open').toLowerCase().replace(/\s+/g, '-')}">${r.status || 'Open'}</span></td>
     </tr>
   `).join('');
 }
@@ -83,8 +92,8 @@ function renderCompliance(compliance) {
     <div class="card">
       <h4>${c.framework}</h4>
       <div class="score-display">${c.score}%</div>
-      <div style="font-size: 0.85rem; font-weight: 600; color: #262626;">${c.metricLabel}</div>
-      <p style="font-size: 0.78rem; color: #8c8c8c; margin-top: 0.25rem;">${c.definition}</p>
+      <div style="font-size: 0.85rem; font-weight: 600; color: #262626;">${c.metricLabel || 'Compliance Score'}</div>
+      <p style="font-size: 0.78rem; color: #8c8c8c; margin-top: 0.25rem;">${c.definition || ''}</p>
     </div>
   `).join('');
 }
@@ -97,9 +106,9 @@ function renderControls(controls) {
     <tr>
       <td><strong>${c.id}</strong></td>
       <td>${c.name}</td>
-      <td><code>${c.isoMapping}</code></td>
-      <td>${c.owner}</td>
-      <td><span class="status-pill ${c.status.toLowerCase().replace(/\s+/g, '-')}">${c.status}</span></td>
+      <td><code>${c.isoMapping || c.iso27001Control || '-'}</code></td>
+      <td>${c.owner || '-'}</td>
+      <td><span class="status-pill ${(c.status || 'active').toLowerCase().replace(/\s+/g, '-')}">${c.status || 'Active'}</span></td>
     </tr>
   `).join('');
 }
@@ -112,9 +121,9 @@ function renderVendors(vendors) {
     <tr>
       <td><strong>${v.name}</strong></td>
       <td>${v.service}</td>
-      <td><span class="badge ${v.tier.toLowerCase()}">${v.tier} Risk</span></td>
-      <td>${v.dataAccess}</td>
-      <td><span class="status-pill ${v.assessmentStatus.toLowerCase().replace(/\s+/g, '-')}">${v.assessmentStatus}</span></td>
+      <td><span class="badge ${(v.tier || 'low').toLowerCase()}">${v.tier} Risk</span></td>
+      <td>${v.dataAccess || '-'}</td>
+      <td><span class="status-pill ${(v.assessmentStatus || 'completed').toLowerCase().replace(/\s+/g, '-')}">${v.assessmentStatus}</span></td>
     </tr>
   `).join('');
 }
@@ -127,10 +136,10 @@ function renderFindings(findings) {
     <tr>
       <td><strong>${f.id}</strong></td>
       <td>${f.title}</td>
-      <td><span class="badge ${f.severity.toLowerCase()}">${f.severity}</span></td>
-      <td>${f.dueDate}</td>
-      <td>${f.owner}</td>
-      <td><span class="status-pill ${f.status.toLowerCase().replace(/\s+/g, '-')}">${f.status}</span></td>
+      <td><span class="badge ${(f.severity || 'low').toLowerCase()}">${f.severity}</span></td>
+      <td>${f.dueDate || '-'}</td>
+      <td>${f.owner || '-'}</td>
+      <td><span class="status-pill ${(f.status || 'open').toLowerCase().replace(/\s+/g, '-')}">${f.status}</span></td>
     </tr>
   `).join('');
 }
