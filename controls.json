@@ -1,0 +1,38 @@
+[
+  {
+    "id": "CTRL-001",
+    "name": "Quarterly Access Reviews",
+    "framework": "ISO 27001",
+    "status": "Effective"
+  },
+  {
+    "id": "CTRL-002",
+    "name": "Incident Response Plan",
+    "framework": "NIST CSF",
+    "status": "Partially Effective"
+  },
+  {
+    "id": "CTRL-003",
+    "name": "POPIA Data Retention",
+    "framework": "POPIA",
+    "status": "Effective"
+  },
+  {
+    "id": "CTRL-004",
+    "name": "Vendor Security Assessment",
+    "framework": "ISO 27001",
+    "status": "Partially Effective"
+  },
+  {
+    "id": "CTRL-005",
+    "name": "Security Awareness Training",
+    "framework": "NIST CSF",
+    "status": "Effective"
+  },
+  {
+    "id": "CTRL-006",
+    "name": "Business Continuity Testing",
+    "framework": "ISO 27001",
+    "status": "Ineffective"
+  }
+]

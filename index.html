@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Insurance Brokers | GRC Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">HIB</div>
+      <div><strong>Happy Insurance</strong><span>GRC Programme</span></div>
+    </div>
+    <nav>
+      <button class="nav-item active" data-target="overview">Dashboard</button>
+      <button class="nav-item" data-target="risks">Risk Register</button>
+      <button class="nav-item" data-target="controls">Controls</button>
+      <button class="nav-item" data-target="findings">Findings</button>
+      <button class="nav-item" data-target="vendors">Third-Party Risk</button>
+      <button class="nav-item" data-target="bcp">Business Continuity</button>
+    </nav>
+    <div class="sidebar-note">
+      <strong>Portfolio simulation</strong>
+      <p>Fictional insurance organisation created to demonstrate practical GRC capability.</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Governance • Risk • Compliance</p>
+        <h1>Executive GRC Dashboard</h1>
+      </div>
+      <div class="updated">Last updated: <strong id="lastUpdated"></strong></div>
+    </header>
+
+    <section id="overview" class="page active">
+      <div class="summary-grid">
+        <div class="card metric"><span>Overall Risk</span><strong class="critical-text">HIGH</strong><small>Immediate management attention</small></div>
+        <div class="card metric"><span>Open Risks</span><strong id="openRisks">—</strong><small>Across all risk categories</small></div>
+        <div class="card metric"><span>Compliance</span><strong id="avgCompliance">—</strong><small>Across tracked frameworks</small></div>
+        <div class="card metric"><span>Open Findings</span><strong id="openFindings">—</strong><small>Including overdue actions</small></div>
+      </div>
+
+      <div class="two-col">
+        <section class="card">
+          <div class="section-head"><div><h2>Risk posture</h2><p>Current distribution by rating</p></div></div>
+          <div id="riskBars" class="bars"></div>
+        </section>
+        <section class="card">
+          <div class="section-head"><div><h2>Compliance posture</h2><p>Framework implementation status</p></div></div>
+          <div id="complianceBars" class="bars"></div>
+        </section>
+      </div>
+
+      <section class="card">
+        <div class="section-head"><div><h2>Top risks</h2><p>Highest-scoring risks requiring attention</p></div><button class="text-button" data-target="risks">View register →</button></div>
+        <div id="topRisks" class="table-wrap"></div>
+      </section>
+
+      <div class="two-col">
+        <section class="card">
+          <div class="section-head"><div><h2>Remediation</h2><p>Finding lifecycle</p></div></div>
+          <div id="findingSummary" class="status-grid"></div>
+        </section>
+        <section class="card">
+          <div class="section-head"><div><h2>Control effectiveness</h2><p>Current operating effectiveness</p></div></div>
+          <div id="controlSummary" class="status-grid"></div>
+        </section>
+      </div>
+    </section>
+
+    <section id="risks" class="page">
+      <div class="page-title"><h2>Risk Register</h2><p>Risk identification, assessment and treatment tracking.</p></div>
+      <div class="toolbar"><input id="riskSearch" placeholder="Search risks..."><select id="riskFilter"><option>All</option><option>Critical</option><option>High</option><option>Medium</option><option>Low</option></select></div>
+      <div class="card table-wrap" id="riskTable"></div>
+    </section>
+
+    <section id="controls" class="page">
+      <div class="page-title"><h2>Control Register</h2><p>Mapped controls and operating effectiveness.</p></div>
+      <div class="card table-wrap" id="controlTable"></div>
+    </section>
+
+    <section id="findings" class="page">
+      <div class="page-title"><h2>Findings & Remediation</h2><p>Audit and assessment observations tracked through closure.</p></div>
+      <div class="toolbar"><input id="findingSearch" placeholder="Search findings..."><select id="findingFilter"><option>All</option><option>Open</option><option>In Progress</option><option>Overdue</option></select></div>
+      <div class="card table-wrap" id="findingTable"></div>
+    </section>
+
+    <section id="vendors" class="page">
+      <div class="page-title"><h2>Third-Party Risk</h2><p>Supplier assessment and residual risk monitoring.</p></div>
+      <div class="summary-grid compact">
+        <div class="card metric"><span>High Risk Vendors</span><strong id="highVendors">—</strong></div>
+        <div class="card metric"><span>Assessments Complete</span><strong id="vendorCompletion">—</strong></div>
+      </div>
+      <div class="card table-wrap" id="vendorTable"></div>
+    </section>
+
+    <section id="bcp" class="page">
+      <div class="page-title"><h2>Business Continuity</h2><p>Resilience, RTO/RPO and recovery readiness.</p></div>
+      <div class="summary-grid compact">
+        <div class="card metric"><span>Critical Processes</span><strong>12</strong></div>
+        <div class="card metric"><span>RTO Compliance</span><strong>83%</strong></div>
+        <div class="card metric"><span>RPO Compliance</span><strong>75%</strong></div>
+        <div class="card metric"><span>Last DR Test</span><strong class="date">15 Aug</strong></div>
+      </div>
+      <div class="card bcp-box">
+        <h3>Management assessment</h3>
+        <p>Business continuity capability is <strong>partially effective</strong>. The primary improvement area is evidence retention and completion of scheduled disaster-recovery testing.</p>
+        <div class="progress"><span style="width:83%"></span></div>
+        <small>RTO objectives achieved: 83%</small>
+      </div>
+    </section>
+  </main>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
