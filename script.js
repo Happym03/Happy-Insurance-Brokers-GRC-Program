@@ -5,10 +5,13 @@ document.addEventListener('DOMContentLoaded', () => {
 async function fetchJSON(name) {
   try {
     const res = await fetch(`data/${name}.json`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) {
+      console.warn(`File data/${name}.json returned HTTP status ${res.status}`);
+      return null;
+    }
     return await res.json();
   } catch (err) {
-    console.warn(`Failed to load data/${name}.json:`, err);
+    console.error(`Error parsing data/${name}.json:`, err);
     return null;
   }
 }
@@ -23,39 +26,34 @@ async function loadDashboardData() {
     fetchJSON('metadata')
   ]);
 
-  // If critical datasets fail to load entirely
-  if (!risks && !compliance) {
-    const mainContent = document.querySelector('.main-content') || document.body;
-    mainContent.innerHTML = `
-      <div style="padding: 2rem; background: #fff1f0; border: 1px solid #ffa39e; border-radius: 8px; margin: 2rem;">
-        <h3 style="color: #cf1322; margin-top: 0;">⚠️ Unable to Load Dashboard Data</h3>
-        <p style="color: #434343;">There was an issue loading the asynchronous GRC JSON models. Please check that all files exist in the <code>data/</code> folder.</p>
-      </div>
-    `;
-    return;
-  }
-
-  renderMetadata(metadata);
+  // Render metadata regardless of other files
+  if (metadata) renderMetadata(metadata);
+  
+  // Render tables for any files that successfully loaded
   if (risks) renderRiskRegister(risks);
   if (compliance) renderCompliance(compliance);
   if (controls) renderControls(controls);
   if (vendors) renderVendors(vendors);
   if (findings) renderFindings(findings);
+
+  // Clear error box if at least one core dataset loaded
+  if (risks || compliance || controls) {
+    const errorBox = document.querySelector('.error-banner');
+    if (errorBox) errorBox.remove();
+  }
 }
 
 function renderMetadata(metadata) {
-  if (!metadata) return;
-  
   const lastUpdatedElem = document.getElementById('last-updated');
-  if (lastUpdatedElem) {
-    lastUpdatedElem.textContent = `Data Last Reviewed: ${metadata.lastReviewed} (v${metadata.version})`;
+  if (lastUpdatedElem && metadata.lastReviewed) {
+    lastUpdatedElem.textContent = `Data Last Reviewed: ${metadata.lastReviewed} (v${metadata.version || '1.0'})`;
   }
 
   const postureElem = document.getElementById('overall-risk-posture');
   if (postureElem && metadata.overallRiskPosture) {
     postureElem.innerHTML = `
-      <div style="background: #fafafa; border-left: 4px solid #f5222d; padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem;">
-        <strong style="color: #cf1322;">Overall Enterprise Risk Posture: ${metadata.overallRiskPosture}</strong>
+      <div style="background: #ffffff; border-left: 4px solid #ff4d4f; padding: 1rem; border-radius: 6px; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+        <strong style="color: #cf1322; font-size: 1.05rem;">Overall Enterprise Risk Posture: ${metadata.overallRiskPosture}</strong>
         <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: #595959;">${metadata.postureRationale}</p>
       </div>
     `;
@@ -64,14 +62,14 @@ function renderMetadata(metadata) {
 
 function renderRiskRegister(risks) {
   const tableBody = document.getElementById('risk-table-body');
-  if (!tableBody || !risks) return;
+  if (!tableBody || !Array.isArray(risks)) return;
 
   tableBody.innerHTML = risks.map(r => `
     <tr>
       <td><strong>${r.id}</strong></td>
       <td>${r.name}<br><small style="color:#8c8c8c">${r.category || ''}</small></td>
       <td>
-        <span class="badge ${(r.inherentRating || 'low').toLowerCase()}">${r.inherentScore || r.score || '-'} (${r.inherentRating || r.rating || '-'})</span>
+        <span class="badge ${(r.inherentRating || r.rating || 'low').toLowerCase()}">${r.inherentScore || r.score || '-'} (${r.inherentRating || r.rating || '-'})</span>
       </td>
       <td style="font-size: 0.85rem; color: #434343;">${r.controls || '-'}</td>
       <td>
@@ -86,13 +84,13 @@ function renderRiskRegister(risks) {
 
 function renderCompliance(compliance) {
   const container = document.getElementById('compliance-grid');
-  if (!container || !compliance) return;
+  if (!container || !Array.isArray(compliance)) return;
 
   container.innerHTML = compliance.map(c => `
-    <div class="card">
-      <h4>${c.framework}</h4>
-      <div class="score-display">${c.score}%</div>
-      <div style="font-size: 0.85rem; font-weight: 600; color: #262626;">${c.metricLabel || 'Compliance Score'}</div>
+    <div class="card" style="padding: 1rem; background: #fff; border-radius: 6px; border: 1px solid #e8e8e8;">
+      <h4 style="margin: 0 0 0.5rem 0;">${c.framework}</h4>
+      <div class="score-display" style="font-size: 1.8rem; font-weight: bold; color: #1890ff;">${c.score}%</div>
+      <div style="font-size: 0.85rem; font-weight: 600; color: #262626; margin-top: 0.25rem;">${c.metricLabel || 'Compliance Score'}</div>
       <p style="font-size: 0.78rem; color: #8c8c8c; margin-top: 0.25rem;">${c.definition || ''}</p>
     </div>
   `).join('');
@@ -100,7 +98,7 @@ function renderCompliance(compliance) {
 
 function renderControls(controls) {
   const tableBody = document.getElementById('controls-table-body');
-  if (!tableBody || !controls) return;
+  if (!tableBody || !Array.isArray(controls)) return;
 
   tableBody.innerHTML = controls.map(c => `
     <tr>
@@ -115,7 +113,7 @@ function renderControls(controls) {
 
 function renderVendors(vendors) {
   const tableBody = document.getElementById('vendor-table-body');
-  if (!tableBody || !vendors) return;
+  if (!tableBody || !Array.isArray(vendors)) return;
 
   tableBody.innerHTML = vendors.map(v => `
     <tr>
@@ -130,7 +128,7 @@ function renderVendors(vendors) {
 
 function renderFindings(findings) {
   const tableBody = document.getElementById('findings-table-body');
-  if (!tableBody || !findings) return;
+  if (!tableBody || !Array.isArray(findings)) return;
 
   tableBody.innerHTML = findings.map(f => `
     <tr>
