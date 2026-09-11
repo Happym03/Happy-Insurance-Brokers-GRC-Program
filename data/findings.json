@@ -1,0 +1,50 @@
+[
+  {
+    "id": "F-001",
+    "title": "Quarterly access review not completed",
+    "severity": "High",
+    "status": "Open",
+    "owner": "IT Manager",
+    "dueDate": "2026-10-15"
+  },
+  {
+    "id": "F-002",
+    "title": "Vendor security questionnaire outstanding",
+    "severity": "Medium",
+    "status": "In Progress",
+    "owner": "Procurement",
+    "dueDate": "2026-10-20"
+  },
+  {
+    "id": "F-003",
+    "title": "DR test evidence not retained",
+    "severity": "High",
+    "status": "Overdue",
+    "owner": "BCP Manager",
+    "dueDate": "2026-09-05"
+  },
+  {
+    "id": "F-004",
+    "title": "Information security policy review overdue",
+    "severity": "Low",
+    "status": "Open",
+    "owner": "Compliance Manager",
+    "dueDate": "2026-09-30"
+  },
+  {
+    "id": "F-005",
+    "title": "Incident response tabletop exercise pending",
+    "severity": "Medium",
+    "status": "In Progress",
+    "owner": "Security Lead",
+    "dueDate": "2026-10-10"
+  },
+  {
+    "id": "F-006",
+    "title": "Legacy application patch backlog",
+    "severity": "High",
+    "status": "Overdue",
+    "owner": "IT Manager",
+    "dueDate": "2026-08-30"
+  }
+]

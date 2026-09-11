@@ -1,0 +1,90 @@
+[
+  {
+    "id": "R-001",
+    "title": "Customer data exposure",
+    "category": "Data Privacy",
+    "likelihood": 4,
+    "impact": 5,
+    "score": 20,
+    "rating": "Critical",
+    "owner": "IT Manager",
+    "status": "Open"
+  },
+  {
+    "id": "R-002",
+    "title": "Third-party vendor risk",
+    "category": "Third Party",
+    "likelihood": 4,
+    "impact": 4,
+    "score": 16,
+    "rating": "Critical",
+    "owner": "Compliance Manager",
+    "status": "Open"
+  },
+  {
+    "id": "R-003",
+    "title": "Excessive user privileges",
+    "category": "Access Control",
+    "likelihood": 3,
+    "impact": 4,
+    "score": 12,
+    "rating": "High",
+    "owner": "IT Manager",
+    "status": "Mitigating"
+  },
+  {
+    "id": "R-004",
+    "title": "Incomplete incident response testing",
+    "category": "Incident Management",
+    "likelihood": 3,
+    "impact": 3,
+    "score": 9,
+    "rating": "Medium",
+    "owner": "Security Lead",
+    "status": "Open"
+  },
+  {
+    "id": "R-005",
+    "title": "Business continuity dependency",
+    "category": "BCP/DR",
+    "likelihood": 2,
+    "impact": 4,
+    "score": 8,
+    "rating": "Medium",
+    "owner": "BCP Manager",
+    "status": "Mitigating"
+  },
+  {
+    "id": "R-006",
+    "title": "Policy review overdue",
+    "category": "Governance",
+    "likelihood": 2,
+    "impact": 2,
+    "score": 4,
+    "rating": "Low",
+    "owner": "Compliance Manager",
+    "status": "Open"
+  },
+  {
+    "id": "R-007",
+    "title": "Legacy application vulnerability",
+    "category": "Technology",
+    "likelihood": 4,
+    "impact": 3,
+    "score": 12,
+    "rating": "High",
+    "owner": "IT Manager",
+    "status": "Open"
+  },
+  {
+    "id": "R-008",
+    "title": "Staff security awareness gaps",
+    "category": "People",
+    "likelihood": 3,
+    "impact": 3,
+    "score": 9,
+    "rating": "Medium",
+    "owner": "HR Manager",
+    "status": "Open"
+  }
+]
