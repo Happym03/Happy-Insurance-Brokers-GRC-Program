@@ -1,0 +1,6 @@
+[
+  {"framework":"ISO/IEC 27001:2022","score":14,"metricLabel":"ISMS Baseline Maturity","definition":"Assessed maturity against all 93 Annex A controls."},
+  {"framework":"POPIA","score":78,"metricLabel":"Control Coverage","definition":"Percentage of statutory conditions with operational controls."},
+  {"framework":"FAIS Act","score":85,"metricLabel":"Obligation Alignment","definition":"Compliance mapping across Fit & Proper & CPD standards."},
+  {"framework":"NIST CSF v2.0","score":42,"metricLabel":"Implementation Progress","definition":"Percentage of core subcategories with documented controls."}
+]

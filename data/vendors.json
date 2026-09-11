@@ -1,0 +1,9 @@
+[
+  {"name":"CloudHost SA","service":"Cloud Infrastructure & Hosting","tier":"High","dataAccess":"Full System & PII Access","assessmentStatus":"Completed"},
+  {"name":"PayGate SA","service":"Payment Gateway Processing","tier":"High","dataAccess":"Transactional & Cardholder Data","assessmentStatus":"Completed"},
+  {"name":"BrokerSoft Solutions","service":"Core Brokerage Management Software","tier":"High","dataAccess":"Policyholder Database Access","assessmentStatus":"Under Review"},
+  {"name":"SecureBackup Co.","service":"Offsite Cloud Backup Storage","tier":"Medium","dataAccess":"Encrypted Data Only","assessmentStatus":"Completed"},
+  {"name":"Mailguard Africa","service":"Email Security & Anti-Phishing Gateway","tier":"Medium","dataAccess":"Email Metadata & Attachments","assessmentStatus":"Completed"},
+  {"name":"ClaimsLink API","service":"Third-Party Claims Processing Integration","tier":"High","dataAccess":"Claims & Policyholder PII","assessmentStatus":"Under Review"},
+  {"name":"PayrollPro","service":"HR & Payroll Processing","tier":"Low","dataAccess":"Employee Personal & Banking Data","assessmentStatus":"Completed"}
+]

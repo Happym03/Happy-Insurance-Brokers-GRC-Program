@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Insurance Brokers — GRC Executive Dashboard</title>
+  <style>
+    :root {
+      --navy-dark: #002244;
+      --navy-header: #003366;
+      --bg-slate: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-dark: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --critical-bg: #ff4d4f;
+      --high-bg: #ffa940;
+      --medium-bg: #ffec3d;
+      --low-bg: #73d13d;
+      --status-active-bg: #e6f7ff;
+      --status-active-text: #1890ff;
+      --status-progress-bg: #fff7e6;
+      --status-progress-text: #fa8c16;
+      --status-completed-bg: #f6ffed;
+      --status-completed-text: #52c41a;
+      --status-notstarted-bg: #fef2f2;
+      --status-notstarted-text: #b91c1c;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: var(--bg-slate); color: var(--text-dark); line-height: 1.5; padding-bottom: 4rem; }
+
+    header { background: var(--navy-dark); color: #ffffff; padding: 1.5rem 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    .header-container { max-width: 1280px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.01em; }
+    .badge-date { background: rgba(255, 255, 255, 0.15); font-size: 0.85rem; padding: 0.4rem 0.8rem; border-radius: 6px; font-weight: 500; }
+
+    main { max-width: 1280px; margin: 2rem auto 0 auto; padding: 0 1.5rem; }
+
+    .banner { background: #fff5f5; border-left: 5px solid #dc2626; padding: 1.25rem 1.5rem; border-radius: 8px; margin-bottom: 2rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .banner h3 { color: #991b1b; font-size: 1.05rem; margin-bottom: 0.3rem; font-weight: 700; }
+    .banner p { color: #7f1d1d; font-size: 0.9rem; margin: 0; }
+
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 2rem; }
+    .card h3 { font-size: 1.1rem; color: var(--navy-dark); margin-bottom: 0.5rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+
+    .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2.5rem; }
+    .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-top: 4px solid var(--navy-dark); border-radius: 8px; padding: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .stat-card h4 { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 0.5rem; }
+    .stat-number { font-size: 2.2rem; font-weight: 800; color: var(--navy-dark); line-height: 1; margin-bottom: 0.5rem; }
+    .stat-desc { font-size: 0.82rem; color: var(--text-muted); }
+
+    .section-title { font-size: 1.25rem; color: var(--navy-dark); margin-bottom: 1rem; border-left: 4px solid var(--navy-dark); padding-left: 0.6rem; font-weight: 700; }
+    .section-sub { font-size: 0.85rem; color: var(--text-muted); margin: -0.6rem 0 1rem 0.6rem; }
+
+    .table-container { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; overflow-x: auto; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 2.5rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; text-align: left; }
+    th { background: #f8fafc; color: var(--navy-dark); font-weight: 700; padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); white-space: nowrap; }
+    td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background-color: #f1f5f9; }
+
+    .badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-align: center; }
+    .badge.critical { background-color: var(--critical-bg); color: #ffffff; }
+    .badge.high { background-color: var(--high-bg); color: #ffffff; }
+    .badge.medium { background-color: var(--medium-bg); color: #1f1f1f; }
+    .badge.low { background-color: var(--low-bg); color: #ffffff; }
+
+    .status-pill { display: inline-block; padding: 0.18rem 0.55rem; border-radius: 12px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+    .status-pill.active, .status-pill.open, .status-pill.under-review, .status-pill.implemented { background-color: var(--status-active-bg); color: var(--status-active-text); }
+    .status-pill.in-progress { background-color: var(--status-progress-bg); color: var(--status-progress-text); }
+    .status-pill.completed { background-color: var(--status-completed-bg); color: var(--status-completed-text); }
+    .status-pill.overdue, .status-pill.not-started { background-color: var(--status-notstarted-bg); color: var(--status-notstarted-text); }
+
+    code { background: #f1f5f9; color: #0f172a; padding: 0.15rem 0.4rem; border-radius: 4px; font-family: monospace; font-size: 0.82rem; }
+
+    .loading-row td { text-align: center; color: var(--text-muted); padding: 1.5rem; font-style: italic; }
+    .error-banner { background: #fff5f5; border-left: 5px solid #dc2626; padding: 1rem 1.25rem; border-radius: 8px; margin-bottom: 1.5rem; color: #7f1d1d; font-size: 0.88rem; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-container">
+      <h1>Happy Insurance Brokers — GRC Executive Dashboard</h1>
+      <div class="badge-date" id="badge-date">Loading…</div>
+    </div>
+  </header>
+
+  <main>
+    <div id="load-error" style="display:none" class="error-banner">
+      Some dashboard data failed to load. Showing what's available — check the browser console for details.
+    </div>
+
+    <div class="banner" id="risk-banner">
+      <h3 id="banner-heading">Loading risk posture…</h3>
+      <p id="banner-text"></p>
+    </div>
+
+    <div class="card">
+      <h3>📐 Enterprise Risk Methodology (5×5 Assessment Matrix)</h3>
+      <p style="font-size: 0.9rem; color: #334155; margin-bottom: 0.6rem;">
+        <strong>Inherent Risk Score:</strong> Evaluated as <em>Likelihood (1–5) × Impact (1–5)</em> prior to mitigating controls.
+      </p>
+      <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.6rem;">
+        <span class="badge critical">CRITICAL: 15–25</span>
+        <span class="badge high">HIGH: 10–14</span>
+        <span class="badge medium">MEDIUM: 5–9</span>
+        <span class="badge low">LOW: 1–4</span>
+      </div>
+      <p style="font-size: 0.82rem; color: var(--text-muted);">
+        <strong>Residual Risk:</strong> Evaluated post-implementation of mapped ISO/IEC 27001 Annex A security controls and POPIA safeguards.
+      </p>
+    </div>
+
+    <h2 class="section-title">At a Glance</h2>
+    <div class="grid-4" id="glance-cards">
+      <div class="stat-card"><h4>Open Risks</h4><div class="stat-number">—</div><div class="stat-desc">Loading…</div></div>
+      <div class="stat-card"><h4>Open Findings</h4><div class="stat-number">—</div><div class="stat-desc">Loading…</div></div>
+      <div class="stat-card"><h4>High-Risk Vendors</h4><div class="stat-number">—</div><div class="stat-desc">Loading…</div></div>
+      <div class="stat-card"><h4>Controls Implemented</h4><div class="stat-number">—</div><div class="stat-desc">Loading…</div></div>
+    </div>
+
+    <h2 class="section-title">Regulatory & Framework Alignment</h2>
+    <div class="grid-4" id="compliance-cards"></div>
+
+    <h2 class="section-title">Enterprise Risk Register (<span id="risk-count">—</span> Active Risks)</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Risk ID</th>
+            <th>Risk Event &amp; Category</th>
+            <th>Inherent Risk</th>
+            <th>Mapped ISO/Technical Controls</th>
+            <th>Residual Risk</th>
+            <th>Treatment Strategy</th>
+            <th>Owner</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="risk-table-body"><tr class="loading-row"><td colspan="8">Loading risk register…</td></tr></tbody>
+      </table>
+    </div>
+
+    <h2 class="section-title">Control Register (<span id="control-count">—</span> Controls)</h2>
+    <p class="section-sub">Bridges the Risk Register to ISO/IEC 27001:2022 Annex A control references.</p>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Control ID</th>
+            <th>Control Name</th>
+            <th>ISO 27001 Mapping</th>
+            <th>Linked Risk</th>
+            <th>Owner</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="controls-table-body"><tr class="loading-row"><td colspan="6">Loading control register…</td></tr></tbody>
+      </table>
+    </div>
+
+    <h2 class="section-title">Third-Party Risk Management (<span id="vendor-count">—</span> Vendors)</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Vendor</th>
+            <th>Service Provided</th>
+            <th>Risk Tier</th>
+            <th>Data Access Level</th>
+            <th>Assessment Status</th>
+          </tr>
+        </thead>
+        <tbody id="vendor-table-body"><tr class="loading-row"><td colspan="5">Loading vendor register…</td></tr></tbody>
+      </table>
+    </div>
+
+    <h2 class="section-title">Internal Audit Findings &amp; Remediation (<span id="finding-count">—</span> Findings)</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Finding ID</th>
+            <th>Finding Title</th>
+            <th>Severity</th>
+            <th>Remediation Due Date</th>
+            <th>Owner</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="findings-table-body"><tr class="loading-row"><td colspan="6">Loading findings register…</td></tr></tbody>
+      </table>
+    </div>
+
+    <h2 class="section-title">Business Continuity</h2>
+    <div class="grid-4" id="bc-cards">
+      <div class="stat-card"><h4>Critical Processes</h4><div class="stat-number">—</div></div>
+      <div class="stat-card"><h4>RTO Compliance</h4><div class="stat-number">—</div></div>
+      <div class="stat-card"><h4>RPO Compliance</h4><div class="stat-number">—</div></div>
+      <div class="stat-card"><h4>Last DR Test</h4><div class="stat-number">—</div></div>
+    </div>
+    <div class="card">
+      <h3>Management Assessment</h3>
+      <p id="bc-assessment" style="font-size: 0.9rem; color: #334155;">Loading…</p>
+    </div>
+  </main>
+
+  <script>
+    // Fetch paths are relative so this works whether the site is hosted at a
+    // domain root or under a GitHub Pages project subdirectory
+    // (https://<user>.github.io/<repo>/).
+    const files = {
+      risks: 'data/risks.json',
+      controls: 'data/controls.json',
+      vendors: 'data/vendors.json',
+      findings: 'data/findings.json',
+      compliance: 'data/compliance.json',
+      metadata: 'data/metadata.json',
+    };
+
+    function badgeClass(rating) { return (rating || '').toLowerCase(); }
+    function pillClass(status) { return (status || '').toLowerCase().replace(/\s+/g, '-'); }
+
+    async function loadJSON(path) {
+      const res = await fetch(path, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`Failed to load ${path}: ${res.status}`);
+      return res.json();
+    }
+
+    async function init() {
+      let risks = [], controls = [], vendors = [], findings = [], compliance = [], metadata = {};
+      let hadError = false;
+
+      try {
+        [risks, controls, vendors, findings, compliance, metadata] = await Promise.all([
+          loadJSON(files.risks),
+          loadJSON(files.controls),
+          loadJSON(files.vendors),
+          loadJSON(files.findings),
+          loadJSON(files.compliance),
+          loadJSON(files.metadata),
+        ]);
+      } catch (err) {
+        console.error('GRC dashboard data load error:', err);
+        hadError = true;
+        document.getElementById('load-error').style.display = 'block';
+      }
+
+      // Header + banner
+      document.getElementById('badge-date').textContent =
+        `Data Last Reviewed: ${metadata.lastReviewed || '—'}${metadata.version ? ' (v' + metadata.version + ')' : ''}`;
+      document.getElementById('banner-heading').textContent =
+        `Overall Enterprise Risk Posture: ${metadata.overallRiskPosture || '—'}`;
+      document.getElementById('banner-text').textContent = metadata.postureRationale || '';
+
+      // At-a-glance stat cards (computed from live data, not hardcoded)
+      const openRisks = risks.filter(r => r.status !== 'Completed').length;
+      const openFindings = findings.filter(f => f.status !== 'Closed').length;
+      const highRiskVendors = vendors.filter(v => v.tier === 'High').length;
+      const implementedControls = controls.filter(c => c.status === 'Implemented').length;
+
+      const glance = document.getElementById('glance-cards');
+      glance.innerHTML = `
+        <div class="stat-card"><h4>Open Risks</h4><div class="stat-number">${openRisks}</div><div class="stat-desc">Of ${risks.length} risks across all categories</div></div>
+        <div class="stat-card"><h4>Open Findings</h4><div class="stat-number">${openFindings}</div><div class="stat-desc">Of ${findings.length} audit findings, including overdue</div></div>
+        <div class="stat-card"><h4>High-Risk Vendors</h4><div class="stat-number">${highRiskVendors}</div><div class="stat-desc">Of ${vendors.length} assessed third parties</div></div>
+        <div class="stat-card"><h4>Controls Implemented</h4><div class="stat-number">${implementedControls} / ${controls.length}</div><div class="stat-desc">Live status from the Control Register</div></div>
+      `;
+
+      // Compliance framework cards
+      document.getElementById('compliance-cards').innerHTML = compliance.map(c => `
+        <div class="stat-card">
+          <h4>${c.framework}</h4>
+          <div class="stat-number">${c.score}%</div>
+          <div class="stat-desc"><strong>${c.metricLabel}</strong> — ${c.definition}</div>
+        </div>`).join('');
+
+      // Risk register
+      document.getElementById('risk-count').textContent = risks.length;
+      document.getElementById('risk-table-body').innerHTML = risks.map(r => `
+        <tr>
+          <td><strong>${r.id}</strong></td>
+          <td><strong>${r.name}</strong><br><small style="color:#64748b">${r.category}</small></td>
+          <td><span class="badge ${badgeClass(r.inherentRating)}">${r.inherentScore} (${r.inherentRating})</span></td>
+          <td><small style="color:#334155">${r.controls}</small></td>
+          <td><span class="badge ${badgeClass(r.residualRating)}">${r.residualScore} (${r.residualRating})</span></td>
+          <td><code>${r.treatment}</code></td>
+          <td>${r.owner}</td>
+          <td><span class="status-pill ${pillClass(r.status)}">${r.status}</span></td>
+        </tr>`).join('') || '<tr class="loading-row"><td colspan="8">No risk data available.</td></tr>';
+
+      // Control register
+      document.getElementById('control-count').textContent = controls.length;
+      document.getElementById('controls-table-body').innerHTML = controls.map(c => `
+        <tr>
+          <td><strong>${c.id}</strong></td>
+          <td>${c.name}</td>
+          <td><code>${c.isoMapping}</code></td>
+          <td>${c.linkedRisk || '—'}</td>
+          <td>${c.owner}</td>
+          <td><span class="status-pill ${pillClass(c.status)}">${c.status}</span></td>
+        </tr>`).join('') || '<tr class="loading-row"><td colspan="6">No control data available.</td></tr>';
+
+      // Vendor register
+      document.getElementById('vendor-count').textContent = vendors.length;
+      document.getElementById('vendor-table-body').innerHTML = vendors.map(v => `
+        <tr>
+          <td><strong>${v.name}</strong></td>
+          <td>${v.service}</td>
+          <td><span class="badge ${badgeClass(v.tier)}">${v.tier} Risk</span></td>
+          <td>${v.dataAccess}</td>
+          <td><span class="status-pill ${pillClass(v.assessmentStatus)}">${v.assessmentStatus}</span></td>
+        </tr>`).join('') || '<tr class="loading-row"><td colspan="5">No vendor data available.</td></tr>';
+
+      // Findings register
+      document.getElementById('finding-count').textContent = findings.length;
+      document.getElementById('findings-table-body').innerHTML = findings.map(f => `
+        <tr>
+          <td><strong>${f.id}</strong></td>
+          <td>${f.title}</td>
+          <td><span class="badge ${badgeClass(f.severity)}">${f.severity}</span></td>
+          <td>${f.dueDate}</td>
+          <td>${f.owner}</td>
+          <td><span class="status-pill ${pillClass(f.status)}">${f.status}</span></td>
+        </tr>`).join('') || '<tr class="loading-row"><td colspan="6">No findings data available.</td></tr>';
+
+      // Business continuity
+      document.getElementById('bc-cards').innerHTML = `
+        <div class="stat-card"><h4>Critical Processes</h4><div class="stat-number">${metadata.criticalProcesses ?? '—'}</div></div>
+        <div class="stat-card"><h4>RTO Compliance</h4><div class="stat-number">${metadata.rtoCompliance ?? '—'}%</div></div>
+        <div class="stat-card"><h4>RPO Compliance</h4><div class="stat-number">${metadata.rpoCompliance ?? '—'}%</div></div>
+        <div class="stat-card"><h4>Last DR Test</h4><div class="stat-number" style="font-size:1.4rem">${metadata.lastDrTest || '—'}</div></div>
+      `;
+      document.getElementById('bc-assessment').textContent = metadata.bcAssessment || '';
+    }
+
+    init();
+  </script>
+</body>
+</html>

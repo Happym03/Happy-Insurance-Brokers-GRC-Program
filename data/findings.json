@@ -1,0 +1,12 @@
+[
+  {"id":"AUD-2026-01","title":"Legacy Admin Accounts Lacking MFA Enforcement","severity":"High","dueDate":"2026-10-15","owner":"Systems Administrator","status":"In Progress"},
+  {"id":"AUD-2026-02","title":"Incomplete TPRM Due Diligence Questionnaires for 2 Vendors","severity":"Medium","dueDate":"2026-11-01","owner":"Procurement Lead","status":"Open"},
+  {"id":"AUD-2026-03","title":"Disaster Recovery Drill Documentation Outdated","severity":"Low","dueDate":"2026-12-01","owner":"Risk Officer","status":"Open"},
+  {"id":"AUD-2026-04","title":"Quarterly Privileged Access Review Not Evidenced","severity":"High","dueDate":"2026-09-05","owner":"Compliance Officer","status":"Overdue"},
+  {"id":"AUD-2026-05","title":"Phishing Simulation Programme Not Yet Launched","severity":"Medium","dueDate":"2026-10-20","owner":"IT Security Manager","status":"Open"},
+  {"id":"AUD-2026-06","title":"Vulnerability Scan Cadence Below Policy Requirement","severity":"Medium","dueDate":"2026-10-10","owner":"IT Operations","status":"In Progress"},
+  {"id":"AUD-2026-07","title":"CCTV Retention Period Not Aligned to Policy","severity":"Low","dueDate":"2026-11-15","owner":"Facilities Lead","status":"Open"},
+  {"id":"AUD-2026-08","title":"Offboarding Checklist Skipped for Contractor Exits","severity":"High","dueDate":"2026-08-30","owner":"HR & IT Security","status":"Overdue"},
+  {"id":"AUD-2026-09","title":"Mobile Device Management Coverage Gaps on BYOD Fleet","severity":"Medium","dueDate":"2026-11-30","owner":"IT Support Lead","status":"In Progress"},
+  {"id":"AUD-2026-10","title":"Data Classification Labels Missing on Legacy File Shares","severity":"Low","dueDate":"2026-12-15","owner":"IT Security Manager","status":"Open"}
+]
